@@ -2,13 +2,14 @@ const { expect } = require('chai')
 const movies = require('../controller').movie
 
 const req = { body: ['title', 'wow'] }
+const send = arg => arg
 const res = {
-    send: arg => arg,
+    send,
     status: function () {
         return this
     },
 }
-const next = error => error
+const next = send
 
 describe('controller', () => {
     describe('#getAll', () => {

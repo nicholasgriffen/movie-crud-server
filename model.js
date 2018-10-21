@@ -1,5 +1,5 @@
 const cache = {}
-const resources = ['movie']
+const resources = ['movie', 'rating']
 
 function makeModel(resource) {
     const plural = resource.replace(/(.*)/, '$1s')
@@ -9,8 +9,9 @@ function makeModel(resource) {
         getAll: () => Promise.resolve({ [plural]: cache[resource] }),
         create: (record) => {
             cache[resource].push(record)
+
             return Promise.resolve({
-                [resource]: cache[resource][cache[resource].length - 1]
+                [resource]: cache[resource].slice(-1).pop()
             })
         }
     }

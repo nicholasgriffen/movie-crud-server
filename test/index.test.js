@@ -5,17 +5,17 @@ const app = require('../index')
 chai.use(require('chai-http'))
 
 describe('The server', () => {
-    it('responds with 205 and a body to a get at /movies', (done) => {
+    it('responds with 205 and body.resources to a get at /resource', (done) => {
         chai.request(app)
             .get('/movies')
             .end((err, res) => {
                 expect(err).to.be.null
                 expect(res.status).to.equal(205)
-                expect(res.body).to.be.ok
+                expect(res.body.movies).to.be.ok
                 done()
             })
     })
-    it('responds with data to a get at /movies', (done) => {
+    it('responds with 201 and body.resource at /resource', (done) => {
         chai.request(app)
             .post('/movies')
             .send({ title: 'Digijan', year: 2018 })
