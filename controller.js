@@ -1,17 +1,27 @@
+const models = require('./model')
+
 function makeController(resource) {
-    const resources = require('./model')[resource]
+    const model = models[resource]
     const controller = {
-        create: (req, res, next) => {
-            return resources.create(req.body)
+        create(req, res, next) {
+            return model.create(req.body)
                 .then(record => {
                     return res.status(201).send(record)
                 })
-                .catch(err => next({ status: 422, message: 'Unable to process create', caught: err }))
+                .catch(err => next({
+                    status: 422,
+                    message: 'Unable to process create',
+                    caught: err
+                }))
         },
-        getAll: (req, res, next) => {
-            return resources.getAll()
+        getAll(req, res, next) {
+            return model.getAll()
                 .then(records => res.status(205).send(records))
-                .catch(err => next({ status: 404, message: `${resource} not found`, caught: err }))
+                .catch(err => next({
+                    status: 404,
+                    message: `${resource} not found`,
+                    caught: err
+                }))
         },
     }
     return controller

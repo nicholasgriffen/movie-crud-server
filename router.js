@@ -1,8 +1,9 @@
-const express = require('express')
+const { Router } = require('express')
+const controllers = require('./controller')
 
 function makeRouter(resource) {
-    const controller = require('./controller')[resource]
-    const router = express.Router()
+    const controller = controllers[resource]
+    const router = Router()
 
     router.get('/', controller.getAll)
 
