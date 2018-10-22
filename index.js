@@ -6,7 +6,7 @@ const helmet = require('helmet')
 const cors = require('cors')
 // Server
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3030
 
 app.use(helmet())
 app.use(cors())
