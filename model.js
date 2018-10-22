@@ -1,26 +1,35 @@
-const cache = {}
-const resources = ['movie', 'rating']
+const schema = {
+    table: {
+        colNames: () => ['movie', 'rating']
+    }
+}
 
 function makeModel(resource) {
-    const plural = resource.replace(/(.*)/, '$1s')
-    cache[resource] = []
-
+    const cache = []
+    const resources = resource.replace(/(.*)/, '$1s')
     const model = {
         // C
         create: (record) => {
-            cache[resource].push(record)
+            cache.push(record)
 
             return Promise.resolve({
-                [resource]: cache[resource].slice(-1).pop()
+                [resource]: cache.slice(-1).pop()
             })
         },
         // R
-        getAll: () => Promise.resolve({ [plural]: cache[resource] }),
+        getAll: () => Promise.resolve({
+            [resources]: cache
+        }),
 
-        getOne: id => Promise.resolve({ [resource]: cache[resource][id] }),
+        getOne: id => Promise.resolve({
+            [resource]: cache.find(record => {
+                return record.id === id
+            }
+            )
+        }),
         // U 
         update: (id, columns) => {
-            model.getOne(id)
+            return model.getOne(id)
                 .then(resource => {
                     columns.forEach(column => {
                         resource[column.name] = resource[column.value]
@@ -30,17 +39,15 @@ function makeModel(resource) {
         },
         // D
         delete: id => {
-            const copy = Object.create(cache[resource][id])
-            if (delete cache[resource][id]) {
-                return Promise.resolve(copy)
-            } else {
-                Promise.reject(new Error('model.delete failed'))
-            }
+            return model.getOne(id)
+                .then(record => {
+                    return cache.splice(cache.indexOf(record, 1))
+                })
         }
     }
     return model
 }
 
-resources.forEach(resource => {
-    module.exports[resource] = makeModel(resource)
+schema.table.colNames().forEach(field => {
+    module.exports[field] = makeModel(field)
 })
