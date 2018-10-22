@@ -3,13 +3,14 @@ const movies = require('../controller').movie
 
 const req = { body: ['title', 'wow'] }
 const send = arg => arg
+const next = send
+
 const res = {
     send,
     status: function () {
         return this
     },
 }
-const next = send
 
 describe('controller', () => {
     describe('#getAll', () => {

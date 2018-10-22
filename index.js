@@ -3,11 +3,13 @@ const express = require('express')
 const router = require('./router')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
+const cors = require('cors')
 // Server
 const app = express()
 const port = process.env.PORT || 3000
 
 app.use(helmet())
+app.use(cors())
 app.use(bodyParser.json())
 // Dynamic route buil
 router.mount(router, app)
