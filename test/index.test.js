@@ -22,7 +22,7 @@ describe('The server', () => {
             .end((err, res) => {
                 expect(err).to.be.null
                 expect(res.status).to.equal(201)
-                expect(res.body.movie).to.deep.equal({ title: 'Digijan', year: 2018 })
+                expect(res.body.movie).to.include({ title: 'Digijan', year: 2018 })
                 done()
             })
     })

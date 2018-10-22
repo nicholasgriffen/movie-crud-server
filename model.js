@@ -10,6 +10,7 @@ function makeModel(resource) {
     const model = {
         // C
         create: (record) => {
+            record.id = cache.length + 1
             cache.push(record)
 
             return Promise.resolve({
@@ -24,17 +25,16 @@ function makeModel(resource) {
         getOne: id => Promise.resolve({
             [resource]: cache.find(record => {
                 return record.id === id
-            }
-            )
+            })
         }),
         // U 
-        update: (id, columns) => {
+        update: (id, body) => {
             return model.getOne(id)
-                .then(resource => {
-                    columns.forEach(column => {
-                        resource[column.name] = resource[column.value]
+                .then(record => {
+                    Object.keys(body).forEach(field => {
+                        record[resource][field] = body[field]
                     })
-                    return resource
+                    return record
                 })
         },
         // D
