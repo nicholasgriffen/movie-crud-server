@@ -10,7 +10,7 @@ describe('The server', () => {
             .get('/movies')
             .end((err, res) => {
                 expect(err).to.be.null
-                expect(res.status).to.equal(205)
+                expect(res.status).to.equal(202)
                 expect(res.body.movies).to.be.ok
                 done()
             })
