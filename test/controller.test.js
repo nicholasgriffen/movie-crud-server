@@ -15,7 +15,7 @@ describe('controller', () => {
     describe('#getAll', () => {
         it('returns an object', () => {
             return movies.getAll(req, res, next)
-                .then(resource => expect(resource).to.be.an('object'))
+                .then(resource => expect(resource.movies).to.be.ok)
         })
     })
     describe('#create', () => {
