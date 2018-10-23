@@ -7,6 +7,7 @@ exports.up = function (knex) {
         table.string('director').notNullable()
         table.integer('year').notNullable()
         table.integer('rating').notNullable()
+        table.string('posterUrl')
     })
 }
 
