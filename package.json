@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "nodemon index.js",
-        "test": "mocha --exit"
+        "test": "./node_modules/.bin/mocha --exit --watch"
     },
     "repository": {
         "type": "git",

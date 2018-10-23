@@ -17,14 +17,13 @@ describe('model', () => {
                     return movies.update(movie.id, { title: `${new Date()}` })
                 })
                 .then(updated => {
-                    console.log('movie in update', movie)
-                    console.log('updated', updated)
                     expect(`${new Date()}`).to.include(updated.title)
                     expect(updated.id).to.equal(movie.id)
                     return movies.delete(movie.id)
                 })
                 .then(deleted => {
-                    return movies.getOne(movie.id)
+                    expect(deleted.id).to.equal(movie.id)
+                    return movies.getOne(deleted.id)
                         .then(retrieved => {
                             expect(retrieved).to.have.own.property('movie')
                             expect(retrieved.movie).to.be.undefined
