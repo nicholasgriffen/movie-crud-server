@@ -6,13 +6,13 @@ const schema = {
 
 
 function makeModel(resource) {
-    const cache = []
+    var cache = []
     const resources = resource.replace(/(.*)/, '$1s')
     const model = {
+        name: resource,
         // C
         create: body => {
-            const record = {}
-            record.id = uuid()
+            const record = { id: uuid() }
 
             return model.insert(body, record)
                 .then(function () { return { [resource]: record } })
@@ -34,12 +34,11 @@ function makeModel(resource) {
         // D
         delete: id => {
             return model.getOne(id)
-                .then(record => {
-                    return cache.splice(cache.indexOf(record), 1)
-                })
+                .then(record => cache.splice(cache.indexOf(record.movie), 1))
         },
         insert: (body, record) => {
             delete body.id
+
             Object.keys(body).forEach(field => {
                 record[field] = body[field]
             })

@@ -3,15 +3,9 @@ const movies = require('../model').movie
 const movie = { title: 'digijan', year: 2017 }
 
 describe('model', () => {
-    describe('#getAll', () => {
-        it('returns an object', () => {
-            return movies.getAll()
-                .then(records => expect(records.movies).to.be.ok)
-        })
-    })
 
-    describe('#create then #getOne', () => {
-        it('creates record with ${resource} key matching arguments then retrieves record by model-generated id', () => {
+    describe('implements CRUD', () => {
+        it('Creates, Retrieves, Updates, Deletes', () => {
             return movies.create(movie)
                 .then(created => {
                     expect(created.movie).to.include(movie)
@@ -19,7 +13,27 @@ describe('model', () => {
                 })
                 .then(retrieved => {
                     expect(retrieved.movie).to.include(movie)
+                    return movies.update(retrieved.movie, { title: `${new Date()}` })
+                })
+                .then(updated => {
+                    expect(`${new Date()}`).to.include(updated.title)
+                    return movies.delete(updated.id)
+                })
+                .then(deleted => {
+                    return movies.getOne(deleted.id)
+                        .then(retrieved => {
+                            expect(retrieved).to.have.own.property('movie')
+                            expect(retrieved.movie).to.be.undefined
+                        })
                 })
         })
+
+        describe('#getAll', () => {
+            it('returns a .${resources} object', () => {
+                return movies.getAll()
+                    .then(records => expect(records).to.be.have.own.property('movies'))
+            })
+        })
+
     })
 })

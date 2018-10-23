@@ -17,26 +17,33 @@ const res = {
 
 describe('controller', () => {
     describe('#getAll', () => {
-        it('returns an object', () => {
+        it('returns an object with ${resources} key', () => {
             return movies.getAll(req, res, next)
                 .then(resource => expect(resource.movies).to.be.ok)
         })
     })
-    describe('#create', () => {
+    describe('implements CRUD', () => {
         it('returns resource object with ${resource} key matching data that was passed in', () => {
             return movies.create(req, res, next)
-                .then(resource => expect(resource.movie).to.include(req.body))
-        })
-    })
-
-    describe('#getOne', () => {
-        it('returns resource object with resource.id matching id that was passed in', () => {
-            return require('../model')['movie'].create(req.body)
-                .then(record => {
-                    req.params.id = record.movie.id
+                .then(created => {
+                    expect(created.movie).to.include(req.body)
+                    req.params.id = created.movie.id
                     return movies.getOne(req, res, next)
                 })
-                .then(resource => expect(resource.movie).to.include(req.body))
+                .then(retrieved => {
+                    expect(retrieved.movie).to.include(req.body)
+                    req.body.title = `${new Date()}`
+                    return movies.update(req, res, next)
+                })
+                .then(updated => {
+                    expect(`${new Date()}`).to.include(updated.movie.title)
+                    return movies.delete(req, res, next)
+                })
+                .then(() => movies.getOne(req, res, next))
+                .then(retrieved => {
+                    expect(retrieved).to.have.own.property('movie')
+                    expect(retrieved.movie).to.be.undefined
+                })
         })
     })
 })
