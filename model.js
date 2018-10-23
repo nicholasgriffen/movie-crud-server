@@ -23,9 +23,7 @@ function makeModel(resource) {
         }),
 
         getOne: id => Promise.resolve({
-            [resource]: cache.find(record => {
-                return record.id === id
-            })
+            [resource]: cache.find(record => record.id === id)
         }),
         // U 
         update: (id, body) => {

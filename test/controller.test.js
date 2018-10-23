@@ -1,7 +1,10 @@
 const { expect } = require('chai')
 const movies = require('../controller').movie
 
-const req = { body: ['title', 'wow'] }
+const req = {
+    body: { title: 'digijan', year: 2017, id: 1 },
+    params: { id: 1 },
+}
 const send = arg => arg
 const next = send
 
@@ -22,7 +25,14 @@ describe('controller', () => {
     describe('#create', () => {
         it('returns resource object with ${resource} key matching data that was passed in', () => {
             return movies.create(req, res, next)
-                .then(resource => expect(resource.movie).to.deep.equal(req.body))
+                .then(resource => expect(resource.movie).to.include(req.body))
+        })
+    })
+
+    describe('#getOne', () => {
+        it('returns resource object with resource.id matching id that was passed in', () => {
+            return movies.getOne(req, res, next)
+                .then(resource => expect(resource.movie).to.include(req.body))
         })
     })
 })

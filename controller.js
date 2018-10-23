@@ -26,8 +26,10 @@ function makeController(resource) {
                 }))
         },
         getOne(req, res, next) {
-            return model.getOne(req.params.id)
-                .then(record => res.status(202).send(record))
+            return model.getOne(+req.params.id)
+                .then(record => {
+                    return res.status(202).send(record)
+                })
                 .catch(err => next({
                     status: 404,
                     message: `${resource} not found`,
@@ -36,7 +38,7 @@ function makeController(resource) {
         },
         // U 
         update(req, res, next) {
-            return model.update(req.params.id, req.body)
+            return model.update(+req.params.id, req.body)
                 .then(record => res.status(201).send(record))
                 .catch(err => next({
                     status: 422,
@@ -45,7 +47,7 @@ function makeController(resource) {
                 }))
         },
         delete(req, res, next) {
-            return model.delete(req.params.id)
+            return model.delete(+req.params.id)
                 .then(deleted => res.status(202).send(deleted))
                 .catch(err => next({
                     status: 422,
