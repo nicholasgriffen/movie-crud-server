@@ -8,7 +8,7 @@ describe('model', () => {
     C: create, body.resource 
     R: getOne(id) body.resource 
     U: update(id) body 
-    D: delete (id) body.resource `, () => {
+    D: delete (id) body`, () => {
         return movies.create(movie)
             .then(created => {
                 expect(created.movie).to.include(movie)

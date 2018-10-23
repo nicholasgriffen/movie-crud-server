@@ -21,7 +21,7 @@ describe('controller', () => {
     C: create, body.resource 
     R: getOne(id) body.resource 
     U: update(id) body 
-    D: delete(id) body.resource `, () => {
+    D: delete(id) body `, () => {
         movies.create(req, res, next)
             .then(created => {
                 expect(created.movie).to.include(req.body)
