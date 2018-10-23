@@ -38,7 +38,7 @@ function makeModel(resources) {
                     return { [resource]: record }
                 })
                 .catch(e => {
-                    return { error: e, [resource]: cache.find(record => record.id === id) }
+                    return Promise.resolve({ error: e, [resource]: cache.find(record => record.id === id) })
                 })
         },
         // U 

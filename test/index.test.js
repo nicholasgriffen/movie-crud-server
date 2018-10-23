@@ -30,9 +30,12 @@ describe('server', () => {
     R: GET resource/id: 202, body.resource  
     U: PUT resource/id  201, body 
     D: DELETE resource/id 202, body`, () => {
-        return chai.request(app)
-            .post(route)
-            .send(body)
+        return chai.request(app).get(route)
+            .then(res => {
+                expect(res.status).to.equal(202)
+                expect(res.body.movies).to.be.ok
+                return chai.request(app).post(route).send(body)
+            })
             .then(created => {
                 body.id = created.body[resource].id
                 expect(created.status).to.equal(201)
@@ -58,12 +61,7 @@ describe('server', () => {
             .then(id => chai.request(app).get(route + id))
             .then(retrieved => {
                 expect(retrieved.status).to.equal(202)
-                expect(retrieved.body.movie).to.be.undefined
-            })
-            .then(() => chai.request(app).get(route))
-            .then(res => {
-                expect(res.status).to.equal(202)
-                expect(res.body.movies).to.be.ok
+                return expect(retrieved.body.movie).to.be.undefined
             })
     })
 })
