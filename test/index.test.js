@@ -8,7 +8,7 @@ const route = '/movies/'
 
 chai.use(require('chai-http'))
 
-describe('The server', () => {
+describe('server', () => {
     it(`
        GET /resource: 202, body.resources
     C: POST /resource: 201, body.resource 
