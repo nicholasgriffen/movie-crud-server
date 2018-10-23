@@ -60,6 +60,6 @@ function makeController(resource) {
     return controller
 }
 
-Object.keys(require('./model')).forEach(modelName => {
+Object.keys(models).forEach(modelName => {
     module.exports[modelName] = makeController(modelName)
 })

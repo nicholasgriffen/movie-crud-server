@@ -1,6 +1,11 @@
 const { expect } = require('chai')
-const movies = require('../model').movie
-const movie = { title: 'digijan', year: 2017 }
+const movies = require('../model').movies
+const movie = {
+    title: 'digijan',
+    year: 2017,
+    director: 'Griff',
+    rating: 5,
+}
 
 describe('model', () => {
     it(`
@@ -32,6 +37,7 @@ describe('model', () => {
                 expect(retrieved).to.have.own.property('movie')
                 expect(retrieved.movie).to.be.undefined
             })
+            .catch(e => expect(e).to.equal(true))
     })
     movies.getAll()
         .then(records => expect(records).to.be.have.own.property('movies'))

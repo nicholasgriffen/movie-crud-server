@@ -1,20 +1,22 @@
-const uuid = require('uuid/v4')
+const db = require('./db')
 
-const schema = {
-    columns: () => ['movie', 'rating'],
-}
-
-
-function makeModel(resource) {
+function makeModel(resources) {
     var cache = []
-    const resources = resource.replace(/(.*)/, '$1s')
+    const resource = resources.replace(/(.*)s/, '$1')
     const model = {
         // C
         create: body => {
-            const record = { id: uuid() }
+            const record = {}
 
             return model.insert(body, record)
-                .then(function () { return { [resource]: record } })
+                .then(record => db.save(record))
+                .then(id => {
+                    record.id = id
+                    return { [resource]: record }
+                })
+                .catch(e => {
+                    return { error: e, [resource]: record }
+                })
         },
         // R
         getAll: () => Promise.resolve({
@@ -54,6 +56,6 @@ function makeModel(resource) {
     }
     return model
 }
-schema.columns().forEach(column => {
-    module.exports[column] = makeModel(column)
+Object.keys(db).forEach(table => {
+    module.exports[table] = makeModel(table)
 })

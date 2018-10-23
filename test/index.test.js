@@ -2,7 +2,12 @@ const chai = require('chai')
 const { expect } = chai
 const app = require('../index')
 
-const body = { title: 'Digijan', year: 2018 }
+const body = {
+    title: 'digijan',
+    year: 2017,
+    director: 'Griff',
+    rating: 5,
+}
 const resource = 'movie'
 const route = '/movies/'
 

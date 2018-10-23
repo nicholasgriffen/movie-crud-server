@@ -1,8 +1,13 @@
 const { expect } = require('chai')
-const movies = require('../controller').movie
+const movies = require('../controller').movies
 
 const req = {
-    body: { title: 'controller.test.js', year: (new Date()).getFullYear() },
+    body: {
+        title: 'digijan',
+        year: 2017,
+        director: 'Griff',
+        rating: 5,
+    },
     params: {},
 }
 const send = arg => arg

@@ -25,5 +25,5 @@ Object.keys(controllers).forEach(controllerName => {
 })
 
 module.exports.mount = function (router, app) {
-    router.resources.forEach(resource => app.use(`/${resource}s`, router[resource]))
+    router.resources.forEach(resource => app.use(`/${resource}`, router[resource]))
 }
