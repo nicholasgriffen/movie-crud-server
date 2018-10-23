@@ -9,7 +9,6 @@ function makeModel(resource) {
     var cache = []
     const resources = resource.replace(/(.*)/, '$1s')
     const model = {
-        name: resource,
         // C
         create: body => {
             const record = { id: uuid() }
@@ -40,9 +39,13 @@ function makeModel(resource) {
                 .then(record => cache.splice(cache.indexOf(record.movie), 1).pop())
         },
         insert: (body, record) => {
+            // Don't change record.id
+            delete body.id
+            // Change everything else
             Object.keys(body).forEach(field => {
                 record[field] = body[field]
             })
+            // Don't add a dupe
             if (cache.indexOf(record) < 0) {
                 cache.push(record)
             }

@@ -9,11 +9,11 @@ describe('model', () => {
             return movies.create(movie)
                 .then(created => {
                     expect(created.movie).to.include(movie)
+                    movie.id = created.movie.id
                     return movies.getOne(created.movie.id)
                 })
                 .then(retrieved => {
                     expect(retrieved.movie).to.include(movie)
-                    movie.id = retrieved.movie.id
                     return movies.update(movie.id, { title: `${new Date()}` })
                 })
                 .then(updated => {
