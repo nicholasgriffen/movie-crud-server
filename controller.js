@@ -26,7 +26,7 @@ function makeController(resource) {
                 }))
         },
         getOne(req, res, next) {
-            return model.getOne(+req.params.id)
+            return model.getOne(req.params.id)
                 .then(record => {
                     return res.status(202).send(record)
                 })

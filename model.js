@@ -1,6 +1,8 @@
+const uuid = require('uuid/v4')
+
 const schema = {
     table: {
-        colNames: () => ['movie', 'rating']
+        columns: () => ['movie', 'rating'],
     }
 }
 
@@ -10,12 +12,10 @@ function makeModel(resource) {
     const model = {
         // C
         create: (record) => {
-            record.id = cache.length + 1
-            cache.push(record)
+            record.id = uuid()
 
-            return Promise.resolve({
-                [resource]: cache.slice(-1).pop()
-            })
+            return Promise.resolve(cache.push(record))
+                .then(function () { return { [resource]: record } })
         },
         // R
         getAll: () => Promise.resolve({
@@ -29,6 +29,7 @@ function makeModel(resource) {
         update: (id, body) => {
             return model.getOne(id)
                 .then(record => {
+                    delete body.id
                     Object.keys(body).forEach(field => {
                         record[resource][field] = body[field]
                     })
@@ -46,6 +47,6 @@ function makeModel(resource) {
     return model
 }
 
-schema.table.colNames().forEach(field => {
+schema.table.columns().forEach(field => {
     module.exports[field] = makeModel(field)
 })
