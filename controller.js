@@ -47,7 +47,7 @@ function makeController(resource) {
                 }))
         },
         delete(req, res, next) {
-            return model.delete(+req.params.id)
+            return model.delete(req.params.id)
                 .then(deleted => res.status(202).send(deleted))
                 .catch(err => next({
                     status: 422,
