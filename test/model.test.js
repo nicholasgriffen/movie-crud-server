@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const movies = require('../model').movie
-const movie = { title: 'digijan', year: 2017, id: 1 }
+const movie = { title: 'digijan', year: 2017 }
 
 describe('model', () => {
     describe('#getAll', () => {
@@ -10,17 +10,16 @@ describe('model', () => {
         })
     })
 
-    describe('#create', () => {
-        it('returns resource object with ${resource} key matching data that was passed in', () => {
+    describe('#create then #getOne', () => {
+        it('creates record with ${resource} key matching arguments then retrieves record by model-generated id', () => {
             return movies.create(movie)
-                .then(resource => expect(resource.movie).to.include(movie))
-        })
-    })
-
-    describe('#getOne', () => {
-        it('returns resource object with ${resource}.id matching id that was passed in', () => {
-            return movies.getOne(movie.id)
-                .then(resource => expect(resource.movie).to.deep.equal(movie))
+                .then(created => {
+                    expect(created.movie).to.include(movie)
+                    return movies.getOne(created.movie.id)
+                })
+                .then(retrieved => {
+                    expect(retrieved.movie).to.include(movie)
+                })
         })
     })
 })

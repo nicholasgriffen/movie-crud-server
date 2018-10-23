@@ -3,6 +3,7 @@ const { expect } = chai
 const app = require('../index')
 
 chai.use(require('chai-http'))
+
 describe('The server', () => {
     it('responds with 205 and body.resources to a get at /resource', (done) => {
         chai.request(app)

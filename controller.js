@@ -38,7 +38,7 @@ function makeController(resource) {
         },
         // U 
         update(req, res, next) {
-            return model.update(+req.params.id, req.body)
+            return model.update(req.params.id, req.body)
                 .then(record => res.status(201).send(record))
                 .catch(err => next({
                     status: 422,
