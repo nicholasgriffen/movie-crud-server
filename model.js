@@ -28,21 +28,24 @@ function makeModel(resource) {
         // U 
         update: (id, body) => {
             return model.getOne(id)
-                .then(record => model.insert(body, record))
+                .then(record => {
+                    return model.insert(body, record.movie)
+                })
+
                 .then(record => record)
         },
         // D
         delete: id => {
             return model.getOne(id)
-                .then(record => cache.splice(cache.indexOf(record.movie), 1))
+                .then(record => cache.splice(cache.indexOf(record.movie), 1).pop())
         },
         insert: (body, record) => {
-            delete body.id
-
             Object.keys(body).forEach(field => {
                 record[field] = body[field]
             })
-            cache.push(record)
+            if (cache.indexOf(record) < 0) {
+                cache.push(record)
+            }
             return Promise.resolve(record)
         }
     }
