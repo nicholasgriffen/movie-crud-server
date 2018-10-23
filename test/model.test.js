@@ -1,5 +1,6 @@
 const { expect } = require('chai')
 const movies = require('../model').movies
+const knex = require('../db/knex')
 const movie = {
     title: 'digijan',
     year: 2017,
@@ -8,6 +9,13 @@ const movie = {
 }
 
 describe('model', () => {
+    before(() => {
+        const config = {
+            directory: './db/migrations'
+        }
+        return knex.migrate.rollback(config)
+            .then(() => knex.migrate.latest(config))
+    })
     it(`
        getAll, body.resources
     C: create, body.resource 
@@ -25,8 +33,8 @@ describe('model', () => {
                 return movies.update(movie.id, { title: `${new Date()}` })
             })
             .then(updated => {
-                expect(`${new Date()}`).to.include(updated.title)
-                expect(updated.id).to.equal(movie.id)
+                expect(`${new Date()}`).to.include(updated.movie.title)
+                expect(updated.movie.id).to.equal(movie.id)
                 return movies.delete(movie.id)
             })
             .then(deleted => {
@@ -36,9 +44,10 @@ describe('model', () => {
             .then(retrieved => {
                 expect(retrieved).to.have.own.property('movie')
                 expect(retrieved.movie).to.be.undefined
+
             })
-            .catch(e => expect(e).to.equal(true))
+            .then(() => movies.getAll()
+                .then(records => expect(records).to.have.own.property('movies'))
+            )
     })
-    movies.getAll()
-        .then(records => expect(records).to.be.have.own.property('movies'))
 })

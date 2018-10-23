@@ -1,5 +1,6 @@
 const { expect } = require('chai')
 const movies = require('../controller').movies
+const knex = require('../db/knex')
 
 const req = {
     body: {
@@ -21,13 +22,20 @@ const res = {
 }
 
 describe('controller', () => {
+    before(() => {
+        const config = {
+            directory: './db/migrations'
+        }
+        return knex.migrate.rollback(config)
+            .then(() => knex.migrate.latest(config))
+    })
     it(`
        getAll, body.resources
     C: create, body.resource 
     R: getOne(id) body.resource 
     U: update(id) body 
     D: delete(id) body `, () => {
-        movies.create(req, res, next)
+        return movies.create(req, res, next)
             .then(created => {
                 expect(created.movie).to.include(req.body)
                 req.params.id = created.movie.id
@@ -39,19 +47,22 @@ describe('controller', () => {
                 return movies.update(req, res, next)
             })
             .then(updated => {
-                expect(`${new Date()}`).to.include(updated.title)
-                expect(updated.id).to.equal(req.params.id)
+                expect(req.body.title).to.include(updated.movie.title)
+                expect(updated.movie.id).to.equal(req.params.id)
                 return movies.delete(req, res, next)
             })
             .then(deleted => {
                 expect(deleted.id).to.equal(req.params.id)
-                return movies.getOne(req, res, next)
+                return deleted.id
             })
+            .then(id => movies.getOne({ params: id }, res, next))
             .then(retrieved => {
                 expect(retrieved).to.have.own.property('movie')
-                expect(retrieved.movie).to.be.undefined
+                expect(retrieved.movie.title).to.be.undefined
             })
-        movies.getAll(req, res, next)
-            .then(resource => expect(resource.movies).to.be.ok)
+            .then(() => movies.getAll(req, res, next)
+                .then(resource => expect(resource.movies).to.be.ok)
+            )
+
     })
 })

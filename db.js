@@ -8,7 +8,6 @@ function makeDb(resource) {
     const db = {
         save: record => {
             if (record.id) {
-                console.log('db save record', record)
                 return knex(resource)
                     .where('id', +record.id)
                     .update(record)

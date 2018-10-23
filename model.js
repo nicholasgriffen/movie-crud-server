@@ -1,9 +1,10 @@
-const db = require('./db')
+const dbs = require('./db')
 
 function makeModel(resources) {
+    const db = dbs[resources]
     var cache = []
-    const resource = resources.replace(/(.*)s/, '$1')
-    const model = {
+    let resource = resources.replace(/(.*)s/, '$1')
+    let model = {
         // C
         create: body => {
             const record = {}
@@ -19,26 +20,46 @@ function makeModel(resources) {
                 })
         },
         // R
-        getAll: () => Promise.resolve({
-            [resources]: cache
-        }),
+        getAll: () => {
+            return db.load()
+                .then(records => {
+                    cache = records
+                    return { [resources]: records }
+                })
+                .catch(e => {
+                    return { error: e, [resources]: cache }
+                })
+        },
 
-        getOne: id => Promise.resolve({
-            [resource]: cache.find(record => record.id === id)
-        }),
+        getOne: id => {
+            return db.load(id)
+                .then(record => {
+                    cache.push(record)
+                    return { [resource]: record }
+                })
+                .catch(e => {
+                    return { error: e, [resource]: cache.find(record => record.id === id) }
+                })
+        },
         // U 
         update: (id, body) => {
-            return model.getOne(id)
+            return db.load(id)
+                .then(loaded => model.insert(body, loaded))
+                .then(updated => db.save(updated))
                 .then(record => {
-                    return model.insert(body, record.movie)
+                    return model.getOne(record)
                 })
-
-                .then(record => record)
         },
         // D
         delete: id => {
             return model.getOne(id)
-                .then(record => cache.splice(cache.indexOf(record.movie), 1).pop())
+                .then(record => {
+                    db.delete(id)
+                    return record
+                })
+                .then(record => {
+                    return cache.splice(cache.indexOf(record.movie), 1).pop()
+                })
         },
         insert: (body, record) => {
             // Don't change record.id
@@ -56,6 +77,6 @@ function makeModel(resources) {
     }
     return model
 }
-Object.keys(db).forEach(table => {
-    module.exports[table] = makeModel(table)
+Object.keys(dbs).forEach(db => {
+    module.exports[db] = makeModel(db)
 })

@@ -37,7 +37,7 @@ describe('db', () => {
             .then(updated => db.load(updated))
             .then(loaded => expect(loaded.year).to.equal(2099))
     })
-    it('deletes', () => {
+    it('#delete deletes', () => {
         return db.delete(record.id)
             .then(deleted => db.load(deleted))
             .then(res => expect(res).to.be.undefined)
