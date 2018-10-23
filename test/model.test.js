@@ -24,19 +24,18 @@ describe('model', () => {
                 .then(deleted => {
                     expect(deleted.id).to.equal(movie.id)
                     return movies.getOne(deleted.id)
-                        .then(retrieved => {
-                            expect(retrieved).to.have.own.property('movie')
-                            expect(retrieved.movie).to.be.undefined
-                        })
+                })
+                .then(retrieved => {
+                    expect(retrieved).to.have.own.property('movie')
+                    expect(retrieved.movie).to.be.undefined
                 })
         })
+    })
 
-        describe('#getAll', () => {
-            it('returns a .${resources} object', () => {
-                return movies.getAll()
-                    .then(records => expect(records).to.be.have.own.property('movies'))
-            })
+    describe('#getAll', () => {
+        it('returns a .${resources} object', () => {
+            return movies.getAll()
+                .then(records => expect(records).to.be.have.own.property('movies'))
         })
-
     })
 })
