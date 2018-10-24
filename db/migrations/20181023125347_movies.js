@@ -1,7 +1,7 @@
 
 exports.up = function (knex) {
     return knex.schema.createTable('movies', table => {
-        table.increments().notNullable()
+        table.increments()
         table.timestamps(true, true)
         table.string('title').notNullable()
         table.string('director').notNullable()

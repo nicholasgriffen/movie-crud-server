@@ -7,6 +7,7 @@ const schema = {
 function makeDb(resource) {
     const db = {
         save: record => {
+            console.log('saving', record)
             if (record.id) {
                 return knex(resource)
                     .where('id', +record.id)
@@ -26,7 +27,8 @@ function makeDb(resource) {
             return knex(resource)
                 .select('*')
                 .where('id', +id)
-                .then(loaded => loaded[0])
+                .first()
+                .then(loaded => loaded)
                 .catch(e => Promise.reject(e))
         },
         delete: id => {
