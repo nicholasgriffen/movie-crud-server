@@ -1,7 +1,6 @@
 const express = require('express')
 // Middleware
 const router = require('./router')
-const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const cors = require('cors')
 // Server
@@ -10,8 +9,8 @@ const port = process.env.PORT || 3030
 
 app.use(helmet())
 app.use(cors())
-app.use(bodyParser.json())
-// Dynamic route buil
+app.use(express.json())
+// Dynamic route builder
 router.mount(router, app)
 
 // catch 404
