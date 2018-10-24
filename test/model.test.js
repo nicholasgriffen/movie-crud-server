@@ -39,12 +39,12 @@ describe('model', () => {
             })
             .then(deleted => {
                 expect(deleted.id).to.equal(movie.id)
-                return movies.getOne(deleted.id)
+                return deleted.id
             })
+            .then(id => movies.getOne(id))
             .then(retrieved => {
                 expect(retrieved).to.have.own.property('movie')
                 expect(retrieved.movie).to.be.undefined
-
             })
             .then(() => movies.getAll()
                 .then(records => expect(records).to.have.own.property('movies'))
